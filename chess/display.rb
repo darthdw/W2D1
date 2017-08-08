@@ -46,4 +46,4 @@ class Display
 end
 
 d = Display.new
-d.play
+# d.play

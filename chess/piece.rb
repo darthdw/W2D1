@@ -3,7 +3,8 @@ require_relative 'base_piece'
 class King < Piece
   include SlidingPiece
 
-  def initialize(color)
+  def initialize(color, pos, board)
+    @limit = true
     @unicode_hash = {
       :B => "\u265a",
       :W => "\u2654"
@@ -21,7 +22,8 @@ end
 class Queen < Piece
   include SlidingPiece
 
-  def initialize(color)
+  def initialize(color, pos, board)
+    @limit = false
     @unicode_hash = {
       :B => "\u265b",
       :W => "\u2655"
@@ -38,7 +40,8 @@ end
 class Bishop < Piece
   include SlidingPiece
 
-  def initialize(color)
+  def initialize(color, pos, board)
+    @limit = false
     @unicode_hash = {
       :B => "\u265d",
       :W => "\u2657"
@@ -55,7 +58,8 @@ end
 class Rook < Piece
   include SlidingPiece
 
-  def initialize(color)
+  def initialize(color, pos, board)
+    @limit = false
     @unicode_hash = {
       :B => "\u265c",
       :W => "\u2656"
@@ -72,7 +76,8 @@ end
 class Knight < Piece
   include SteppingPiece
 
-  def initialize(color)
+  def initialize(color, pos, board)
+    @limit = true
     @unicode_hash = {
       :B => "\u265e",
       :W => "\u2658"
@@ -88,7 +93,8 @@ end
 
 class Pawn < Piece
 
-  def initialize(color)
+  def initialize(color, pos, board)
+    @limit = true
     @unicode_hash = {
       :B => "\u265f",
       :W => "\u2659"
