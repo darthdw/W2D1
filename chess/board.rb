@@ -3,16 +3,23 @@ require 'byebug'
 
 class Board
 
-  attr_reader :grid
+  attr_reader :grid, :b_king, :w_king
 
   def initialize(grid = nil)
     grid ||= Array.new(8) {Array.new(8)}
     @grid = grid
     make_starting_grid
+    @b_king = [0,4]
+    @w_king = [7,4]
+  end
+
+  def check_kings
+    puts "Black King in Danger" if self[@b_king].in_danger?
+    puts "White King in Danger" if self[@w_king].in_danger?
   end
 
   def move_piece(start_pos, end_pos)
-    byebug
+
     piece = self[start_pos]
     if piece.is_null_piece?
       raise ArgumentError, "No piece at selected location"
@@ -24,7 +31,12 @@ class Board
       self[start_pos], self[end_pos] = self[end_pos], self[start_pos]
       piece.position = end_pos
     else
-      raise ArgumentError, "Position Invalid, wtf did you do?"
+      raise ArgumentError, "How TF did you even do that?"
+    end
+    piece = self[end_pos]
+    if piece.class == King
+      @b_king = end_pos if piece.color == :B
+      @w_king = end_pos if piece.color == :W
     end
   end
 

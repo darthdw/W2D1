@@ -1,4 +1,5 @@
 require_relative 'base_piece'
+require 'colorize'
 
 class King < Piece
   include SlidingPiece
@@ -14,6 +15,17 @@ class King < Piece
 
   def move_set
     STRAIGHT_MOVESET + DIAGONAL_MOVESET
+  end
+
+  def in_danger?
+    @board.grid.each do |row|
+      row.each do |piece|
+        next if piece.is_null_piece?
+        next if piece.color == @color
+        return true if piece.moves(piece.position).include?(@position)
+      end
+    end
+    false
   end
 
 
@@ -103,8 +115,16 @@ class Pawn < Piece
   end
 
   def move_set
+    set = []
 
-
+    if @color == :W
+      set = [ [-1, 0], [-1, 1], [-1, -1] ]
+      set << [-2, 0] if @position.first == 6
+    else
+      set = [ [1, 0], [1, 1], [1, -1] ]
+      set << [2, 0] if @position.first == 1
+    end
+    set
   end
 
 end

@@ -5,7 +5,7 @@ require 'byebug'
 class Piece
 
   # UNICODE_HASH = {}
-  attr_accessor :position
+  attr_accessor :position, :locked
 
   attr_reader :symbol, :board, :color, :limit
 
@@ -14,6 +14,7 @@ class Piece
     set_symbol(@color)
     @position = position
     @board = board
+    @locked = false
     # @queue FMR
   end
 
@@ -26,6 +27,7 @@ class Piece
   end
 
   def advance_position(start_pos, diff)
+    # byebug
     x, y = start_pos
     return [] unless is_in_range?(start_pos)
     result = []
@@ -33,10 +35,19 @@ class Piece
     first = x + z
     second = y + w
     pos = [first,second]
+    return [] unless is_in_range?(pos)
     piece = @board[pos]
-    result << pos if is_in_range?(pos) && (piece.is_null_piece? || self.is_foe?(pos))
+    if self.class == Pawn
+      # byebug
+      if diff.last != 0
+        result << pos if self.is_foe?(pos)
+      else
+        result << pos if piece.is_null_piece?
+      end
+    else
+      result << pos if piece.is_null_piece? || self.is_foe?(pos)
+    end
     return result if @limit || piece.nil? || piece.is_piece?
-    # byebug
     result += advance_position(pos,diff)
     result
   end
@@ -82,6 +93,10 @@ class NullPiece < Piece
   def initialize
     @unicode = "\u2432" #find the actual unicode for blank space
 
+  end
+
+  def to_s
+    " "
   end
 
   def is_piece?

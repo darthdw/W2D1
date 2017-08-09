@@ -32,11 +32,13 @@ MOVES = {
 
 class Cursor
 
-  attr_reader :cursor_pos, :board
+  attr_reader :cursor_pos, :board, :start_pos, :end_pos
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
     @board = board
+    @start_pos = []
+    @end_pos = []
   end
 
   def get_input
@@ -86,6 +88,8 @@ class Cursor
       update_pos(MOVES[:up])
     when :down
       update_pos(MOVES[:down])
+    when :space
+      return_method
     when :escape
       Process.exit(0)
     end
@@ -98,4 +102,34 @@ class Cursor
       @cursor_pos[i] = 0 if @cursor_pos[i] == 8
     end
   end
+
+  def return_method
+  begin
+    if @start_pos.empty?
+      @start_pos = @cursor_pos.dup
+      @board[@start_pos].locked = true
+    else
+      @end_pos = @cursor_pos.dup
+      @board[@start_pos].locked = false
+    end
+
+    unless @start_pos.empty? || @end_pos.empty?
+      @board.move_piece(@start_pos, @end_pos)
+      @start_pos = []
+      @end_pos = []
+    end
+  rescue
+    @start_pos = []
+    @end_pos = []
+    puts("Invalid move. Please select again.")
+    sleep 0.75
+  # ensure
+  #   @start_pos = []
+  #   @end_pos = []
+  end
+  end
+
+
+
+
 end
